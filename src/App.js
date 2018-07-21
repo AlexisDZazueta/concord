@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import HomeContainer from './containers/HomeContainer';
+import ProductsContainer from './containers/ProductsContainer';
 import ProductContainer from './containers/ProductContainer';
 import './App.css';
 
 class App extends Component {
   
-  renderProductContainer = () => <h1>ProductContainer</h1>;
-  renderProductListContainer = () => <h1>ProductListContainer</h1>;
   renderProductNewContainer = () => <h1>ProductNewContainer</h1>;
 
   render() {
@@ -15,10 +14,11 @@ class App extends Component {
       <BrowserRouter>
         <div className="App">
           <Route exact path="/" component={ HomeContainer } />
-          <Route exact path="/products" component={ ProductContainer } />
+          <Route exact path="/products" component={ ProductsContainer } />
           <Switch>
             <Route path="/products/new" component={ this.renderProductNewContainer } />
-            <Route path="/products/:sku" component={ this.renderProductContainer } />
+            <Route path="/products/:sku" 
+              render={ props => <ProductContainer sku={ props.match.params.sku } /> } />
           </Switch>
         </div>
       </BrowserRouter>

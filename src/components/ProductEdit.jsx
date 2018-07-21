@@ -1,11 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { reduxForm, Field } from 'redux-form';
+import { connect } from 'react-redux';
 
 const ProductEdit = ({ sku, model, description, price }) => {
   return (
     <div>
       <h2>Editar Producto</h2>
-      <h3>{`SKU: ${sku} / Modelo: ${model} / Descripción: ${description} / Precio: ${price}`}</h3>
+      <form action="">
+        <div>
+          <label htmlFor="sku">Sku: </label>
+          <Field name="sku" component="input" type="text"></Field>
+        </div>
+        <div>
+          <label htmlFor="model">Modelo: </label>
+          <Field name="model" component="input" type="text"></Field>
+        </div>
+        <div>
+          <label htmlFor="description">Descripción: </label>
+          <Field name="description" component="input" type="text"></Field>
+        </div>
+        <div>
+          <label htmlFor="price">Precio: </label>
+          <Field name="price" component="input" type="number"></Field>
+        </div>
+      </form>
     </div>
   );
 };
@@ -17,4 +36,6 @@ ProductEdit.propTypes = {
   price: PropTypes.number
 };
 
-export default ProductEdit;
+const mapStateToProps = (state, props) => ({ initialValues: props })
+
+export default connect(mapStateToProps)(reduxForm({ form: 'ProductEdit' })(ProductEdit));

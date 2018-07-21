@@ -1,57 +1,41 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Route } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import AppFrame from '../components/AppFrame';
-import ProductList from '../components/ProductList';
-import ProductActions from '../components/ProductActions';
-import { fetchProducts } from '../actions/fetchProducts';
-import { getProducts } from '../selectors/products';
+import { getProductBySku } from '../selectors/products';
+import ProductEdit from '../components/ProductEdit';
+import ProductData from '../components/ProductData';
 
 class ProductContainer extends Component {
-  
-  componentDidMount() {
-    this.props.fetchProducts();
-  }
-
-  handleAddNew = () => {
-    this.props.history.push('products/new');
-  }
-
-  renderBody = products => (
-    <div>
-      <ProductList 
-        products={ products } 
-        baseUrl={ 'products/' } />
-      <ProductActions>
-        <button onClick={ this.handleAddNew }>Nuevo Producto</button>
-      </ProductActions>
-    </div>
-  )
+  renderBody = product => (
+    <Route path="/products/:sku/edit" children={
+      ({ match }) => {
+        const ProductControl = match ? ProductEdit : ProductData;
+        return <ProductControl { ...product } />
+      }
+    } />
+  );
 
   render() {
+    const { sku, product } = this.props;
     return (
       <div>
         <AppFrame 
-          header='Listado de clientes'
-          body={ this.renderBody(this.props.products) } />
+          header={ `Producto ${sku}` }
+          body={ this.renderBody(product) } />
       </div>
     );
   }
 }
 
 ProductContainer.propTypes = {
-  fetchProducts: PropTypes.func.isRequired,
-  products: PropTypes.array.isRequired
+  sku: PropTypes.string.isRequired,
+  product: PropTypes.object.isRequired
 };
 
-ProductContainer.defaultProps = {
-  products: []
-} 
+const mapStateToProps = (state, props) => ({
+  product: getProductBySku(state, props)
+})
 
-const mapDispatchToProps = { fetchProducts };
-
-const mapStateToProps = state => ({
-  products: getProducts(state)
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProductContainer);
+export default connect(mapStateToProps, null)(ProductContainer); 
